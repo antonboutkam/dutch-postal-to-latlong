@@ -1,5 +1,5 @@
 # DutchGeo
-Get latitude / longitude by dutch postal / zip code. An easy job if you speak Dutch but for a not native speaker a bit of a search.
+Get latitude / longitude by Dutch postal / zip code. An easy job if you speak Dutch but for a not native speaker a bit of a search.
 
 ## Getting Started
 
@@ -7,7 +7,7 @@ Just install with composer, call Postal::getLatLong('1421AW'); and you are all d
 
 ## Author
 
-* **Anton Boutkam
+* Anton Boutkam
 
 ## License
 
