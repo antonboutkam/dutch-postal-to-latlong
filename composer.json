@@ -1,7 +1,7 @@
 {
     "name": "nuicart/dutchgeo",
     "description": "For all the non dutch speakers that seek a way to convert a Dutch postalcode to a lat/long map coordnates using the Google maps API.",
-    "type": "composer-plugin",
+    "type": "library",
     "require-dev": {
         "phpunit/phpunit": "^6.1"
     },
