@@ -1,5 +1,5 @@
 <?php
-namespace DutchGeo\Decode;
+namespace nuicart\Dutchgeo;
 
 class Postal
 {
@@ -10,7 +10,7 @@ class Postal
 
         if (!preg_match('/^[0-9]{4}[A-Z]{2}$/', $sPostal))
         {
-            throw new Exception("Postalcode format needs to be four digits followed by to characters, got $sPostal.", 1);
+            throw new \Exception("Postalcode format needs to be four digits followed by to characters, got $sPostal.", 1);
         }
 
         $sAddress = urlencode("$sPostal, Nederland");

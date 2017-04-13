@@ -12,5 +12,10 @@
             "email": "anton@nui-boutkam.nl"
         }
     ],
+    "autoload" : {
+        "psr-4" : {
+            "nuicart\\Dutchgeo\\" : "./src"
+        }
+    },
     "require": {}
 }
