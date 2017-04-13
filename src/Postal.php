@@ -1,8 +1,21 @@
 <?php
 namespace nuicart\Dutchgeo;
 
+use nuicart\Dutchgeo\Exception\NotFoundException;
+
+/**
+ * Class Postal
+ * @package nuicart\Dutchgeo
+ */
 class Postal
 {
+    /**
+     * @param $sPostal - A dutch postalcode
+     * @return LatLong - A simple object with latutude and longitude getter
+     * @throws \InvalidArgumentException - When the specified postal code does not meet the criteria for a Dutch postal code ^[0-9]{4}[A-Z]{2}$
+     * @throws ApiException - When the Google API responds with something we don't understand.
+     * @throws NotFoundException - When the postal is not found or does not exist.
+     */
     static function getLatLong($sPostal)
     {
         $sPostal = strtoupper($sPostal);
@@ -10,7 +23,7 @@ class Postal
 
         if (!preg_match('/^[0-9]{4}[A-Z]{2}$/', $sPostal))
         {
-            throw new \Exception("Postalcode format needs to be four digits followed by to characters, got $sPostal.", 1);
+            throw new \InvalidArgumentException("Postalcode format needs to be four digits followed by to characters, got $sPostal.", 1);
         }
 
         $sAddress = urlencode("$sPostal, Nederland");
@@ -29,34 +42,20 @@ class Postal
         {
             if(curl_errno($rCurl))
             {
-                throw new LogicException("Curl connection timed out when doing a Geodecode request at the Google maps API, should we slow down a bit?", 2);
+                throw new ApiException("Curl connection timed out when doing a Geodecode request at the Google maps API, should we slow down a bit?");
             }
-            throw new LogicException("Got an unexpected response from the Google API when doing a GeoDecode for postal $sPostal.", 3);
+            throw new ApiException("Got an unexpected response from the Google API when doing a GeoDecode for postal $sPostal.");
         }
 
         $aJson = json_decode($sJson, true);
 
-        return $aJson['geometry']['location'];
-    }
-}
+        if(!isset($aJson['results']) || !isset($aJson['results'][0]) || !isset($aJson['results'][0]['geometry']) || !isset($aJson['results'][0]['geometry']['location']))
+        {
+            throw new NotFoundException("The lat long for the specified postal was not found.");
+        }
 
-try
-{
-    $aLatLong - GeoCode::getLatLongFromPostal('1421 AW');
-}
-catch (Exception $e)
-{
-    if($e->getCode() == 1)
-    {
-        // Notify someone to fix the postal or do nothing, log a record in the database so it can be fixed.
-    }
-    else if($e->getCode() == 2)
-    {
-        // Notify someone to fix the scripot/cronjob or do nothing, log a record in the database so it can be fixed.
-    }
-    else if($e->getCode() == 3)
-    {
-        // Notify someone to fix the scripot/cronjob or do nothing, log a record in the database so it can be fixed.
+        $aLatLong = $aJson['results'][0]['geometry']['location'];
+        $oLatLong = new LatLong($aLatLong['lat'], $aLatLong['lng']);
+        return $oLatLong;
     }
 }
-
